@@ -29,6 +29,11 @@
 }
 
 - (void) preview:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void) previewByMimetype:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
 - (void) open:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+- (void) openByMimetype:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
 
 @end

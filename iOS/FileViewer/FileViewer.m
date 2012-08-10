@@ -23,14 +23,20 @@
  */
 
 #import "FileViewer.h"
+#if TARGET_OS_IPHONE
+#import <MobileCoreServices/MobileCoreServices.h>
+#else
+#import <CoreServices/CoreServices.h>
+#endif
 
 @implementation FileViewer
 
 
 /**
  * Returns an UIDocumentInteractionController instance for a specific path.
+ * If mimeType is not nil, the corresponding UTI is calculated and used.
  */
-- (UIDocumentInteractionController*) documentInteractionControllerForPath:(NSString*)resourcePath
+- (UIDocumentInteractionController*) documentInteractionControllerForPath:(NSString*)resourcePath ofType:(NSString*) mimeType
 {
     
     NSString* absPath = nil;
@@ -75,7 +81,19 @@
     UIDocumentInteractionController *interactionController =
         [UIDocumentInteractionController interactionControllerWithURL: [NSURL fileURLWithPath:absPath]];
     
-    interactionController.delegate = self;    
+    interactionController.delegate = self;
+    
+    if (mimeType != nil) {
+        
+        // Find the appropiate UTI for the mimeType
+        CFStringRef MIMEType = (__bridge CFStringRef)mimeType;
+        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, MIMEType, NULL);
+        NSString* UTIString = (__bridge_transfer NSString*)UTI;
+        //NSLog(@"MIME: %@, UTI: %@", mimeType, UTIString);
+        
+        interactionController.UTI = UTIString;
+    }
+    
     return interactionController;
 }
 
@@ -123,31 +141,27 @@
 
 
 /**
- * Calls an error or success callback in the Cordova client.
+ * Calls an error or success callback in the Cordova client with default values for some parameters.
  */
 - (void) publish:(NSInteger)status withMessage:(NSString*)message withCallback:(NSString*) callbackId
 {
     [self publish:status withMessage:message withCallback:callbackId withURL:@"" withUTI:@"" withName:@""];
 }
 
+
 /**
  * Opens a document preview.
  */
-- (void) preview:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+-(void) preview:(NSString*) resourcePath ofType:(NSString*) mimeType withCallback:(NSString*) callbackId
 {
-    NSString* callbackId = [arguments pop];
-    VERIFY_ARGUMENTS(arguments, 1, callbackId)
-    
-    NSString* resourcePath = [arguments objectAtIndex:0];     
-    
-    UIDocumentInteractionController* ic = [self documentInteractionControllerForPath:resourcePath];
+    UIDocumentInteractionController* ic = [self documentInteractionControllerForPath:resourcePath ofType:mimeType];
     
     if (ic == nil) {
         [self publish:CDVCommandStatus_ERROR withMessage:@"Can't find the resource." withCallback:callbackId];
         return;
     }
-
-
+    
+    
     BOOL ret = [ic presentPreviewAnimated:YES];
     
     if (ret == YES) {
@@ -165,16 +179,40 @@
 
 
 /**
- * Opens menu with options to open the document.
+ * Opens a document preview.
  */
-- (void) open:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) preview:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
 {
     NSString* callbackId = [arguments pop];
     VERIFY_ARGUMENTS(arguments, 1, callbackId)
     
     NSString* resourcePath = [arguments objectAtIndex:0];
     
-    UIDocumentInteractionController* ic = [self documentInteractionControllerForPath:resourcePath];
+    [self preview:resourcePath ofType:nil withCallback:callbackId];
+}
+
+
+/**
+ * Opens a document preview specifying the mimetype.
+ */
+- (void) previewByMimetype:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSString* callbackId = [arguments pop];
+    VERIFY_ARGUMENTS(arguments, 1, callbackId)
+    
+    NSString* resourcePath = [arguments objectAtIndex:0];
+    NSString* mimeType = [arguments objectAtIndex:1];
+    
+    [self preview:resourcePath ofType:mimeType withCallback:callbackId];
+}
+
+
+/**
+ * Opens a menu with options to open the document.
+ */
+-(void) open:(NSString*) resourcePath ofType:(NSString*) mimeType withCallback:(NSString*) callbackId
+{
+    UIDocumentInteractionController* ic = [self documentInteractionControllerForPath:resourcePath ofType:mimeType];
     
     if (ic == nil) {
         [self publish:CDVCommandStatus_ERROR withMessage:@"Can't find the resource." withCallback:callbackId];
@@ -196,6 +234,35 @@
               withURL:[ic.URL absoluteString] withUTI:ic.UTI withName:ic.name];
         
     }
+}
+
+
+/**
+ * Opens a menu with options to open the document.
+ */
+- (void) open:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+{
+    NSString* callbackId = [arguments pop];
+    VERIFY_ARGUMENTS(arguments, 1, callbackId)
+    
+    NSString* resourcePath = [arguments objectAtIndex:0];
+    
+    [self open:resourcePath ofType:nil withCallback:callbackId];
+}
+
+
+/**
+ * Opens a menu with options to open the document specifying the mimetype.
+ */
+- (void) openByMimetype:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+{
+    NSString* callbackId = [arguments pop];
+    VERIFY_ARGUMENTS(arguments, 1, callbackId)
+    
+    NSString* resourcePath = [arguments objectAtIndex:0];
+    NSString* mimeType = [arguments objectAtIndex:1];
+    
+    [self open:resourcePath ofType:mimeType withCallback:callbackId];
 }
 
 

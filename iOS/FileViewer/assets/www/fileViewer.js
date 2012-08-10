@@ -50,6 +50,25 @@ FileViewer.prototype.preview = function(filepath, successCallback, errorCallback
 
 
 /**
+ * Define method FileViewer::previewByMimetype().
+ */
+FileViewer.prototype.previewByMimetype = function(filepath, mimetype, successCallback, errorCallback) {
+
+    if (successCallback && (typeof successCallback !== "function")) {
+        console.log("FileViewer Error: successCallback is not a function");
+        return;
+    }
+    
+    if (errorCallback && (typeof errorCallback !== "function")) {
+        console.log("FileViewer Error: errorCallback is not a function");
+        return;
+    }
+    
+    PhoneGap.exec(successCallback, errorCallback, "FileViewer", "previewByMimetype", [filepath, mimetype]);
+};
+
+
+/**
  * Define method FileViewer::open().
  */
 FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
@@ -65,6 +84,25 @@ FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
     }
     
     PhoneGap.exec(successCallback, errorCallback, "FileViewer", "open", [filepath]);
+};
+
+
+/**
+ * Define method FileViewer::openByMimetype().
+ */
+FileViewer.prototype.openByMimetype = function(filepath, mimetype, successCallback, errorCallback) {
+    
+    if (successCallback && (typeof successCallback !== "function")) {
+        console.log("FileViewer Error: successCallback is not a function");
+        return;
+    }
+    
+    if (errorCallback && (typeof errorCallback !== "function")) {
+        console.log("FileViewer Error: errorCallback is not a function");
+        return;
+    }
+    
+    PhoneGap.exec(successCallback, errorCallback, "FileViewer", "openByMimetype", [filepath, mimetype]);
 };
 
 

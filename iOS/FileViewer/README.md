@@ -2,6 +2,12 @@
 
 This plugin shows a preview of a document or a list of actions and applications to open the document with.
 
+## Setup
+
+- Drag and drop the files FileViewer.* from Finder to your Plugins folder in XCode.
+- Add the FileViewer.js file to your www folder, and add a reference to it: <script type="text/javascript" src="FileViewer.js">
+- Add new entry with key FileViewer and value FileViewer to Plugins in Cordova.plist/Cordova.plist
+
 ## Usage
 
 A full example can be found in main.js

@@ -33,6 +33,30 @@
 
 
 /**
+ * Transforms an UTI into a MimeType.
+ */
+- (NSString*) MimetypeFromUTI:(NSString*) uti
+{
+    CFStringRef UTIString = (__bridge CFStringRef) uti;
+    CFStringRef MIMEType = UTTypeCopyPreferredTagWithClass(UTIString, kUTTagClassMIMEType);
+    NSString* mimeType = (__bridge_transfer NSString*) MIMEType;
+    return mimeType;
+}
+
+
+/**
+ * Transforms a MimeType into an UTI.
+ */
+- (NSString*) UTIFromMimetype:(NSString*) mimeType
+{
+    CFStringRef MIMEType = (__bridge CFStringRef) mimeType;
+    CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, MIMEType, NULL);
+    NSString* uti = (__bridge_transfer NSString*) UTI;
+    return uti;
+}
+
+
+/**
  * Returns an UIDocumentInteractionController instance for a specific path.
  * If mimeType is not nil, the corresponding UTI is calculated and used.
  */
@@ -86,12 +110,7 @@
     if (mimeType != nil) {
         
         // Find the appropiate UTI for the mimeType
-        CFStringRef MIMEType = (__bridge CFStringRef)mimeType;
-        CFStringRef UTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, MIMEType, NULL);
-        NSString* UTIString = (__bridge_transfer NSString*)UTI;
-        //NSLog(@"MIME: %@, UTI: %@", mimeType, UTIString);
-        
-        interactionController.UTI = UTIString;
+        interactionController.UTI = [self UTIFromMimetype:mimeType];
     }
     
     return interactionController;
@@ -116,11 +135,13 @@
 - (void) publish:(NSInteger)status withMessage:(NSString*)message withCallback:(NSString*) callbackId
          withURL:(NSString*) url withUTI:(NSString*) uti withName:(NSString*) name
 {
+    NSString* mimeType = [self MimetypeFromUTI:uti];
+    
     NSMutableDictionary* error = [NSMutableDictionary dictionaryWithCapacity:5];
     [error setObject:[NSNumber numberWithInteger: status] forKey: @"code"];
     [error setObject:message forKey: @"message"];
     [error setObject:url forKey: @"url"];
-    [error setObject:uti forKey: @"uti"];
+    [error setObject:mimeType forKey: @"type"];
     [error setObject:name forKey: @"name"];
     
     CDVPluginResult* result = [CDVPluginResult resultWithStatus:status messageAsDictionary:error];

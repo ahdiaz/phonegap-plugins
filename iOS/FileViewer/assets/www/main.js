@@ -34,7 +34,7 @@ function success(status) {
     console.log('Code: ' + status.code);
     console.log('Message: ' + status.message);
     console.log('URL: ' + status.url);
-    console.log('Type: ' + status.uti);
+    console.log('Type: ' + status.type);
     console.log('Name: ' + status.name);
 }
 
@@ -44,7 +44,7 @@ function fail(error) {
     console.log('Code: ' + error.code);
     console.log('Message: ' + error.message);
     console.log('URL: ' + error.url);
-    console.log('Type: ' + error.uti);
+    console.log('Type: ' + error.type);
     console.log('Name: ' + error.name);
 }
 
@@ -53,6 +53,7 @@ function preview(filepath) {
 
     var fileViewer = window.plugins.FileViewer;
     fileViewer.preview(filepath, success, fail);
+    //fileViewer.previewByMimetype(filepath, 'image/png', success, fail);
 }
 
 

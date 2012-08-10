@@ -30,7 +30,7 @@ var deviceInfo = function() {
 
 
 function success(status) {
-	console.log('--- Success ---');
+    console.log('--- Success ---');
     console.log('Code: ' + status.code);
     console.log('Message: ' + status.message);
     console.log('URL: ' + status.url);
@@ -40,7 +40,7 @@ function success(status) {
 
 
 function fail(error) {
-	console.log('--- Error ---');
+    console.log('--- Error ---');
     console.log('Code: ' + error.code);
     console.log('Message: ' + error.message);
     console.log('URL: ' + error.url);
@@ -51,14 +51,14 @@ function fail(error) {
 
 function preview(filepath) {
 
-	var fileViewer = window.plugins.FileViewer;
+    var fileViewer = window.plugins.FileViewer;
     fileViewer.preview(filepath, success, fail);
 }
 
 
 function open(filepath) {
     
-	var fileViewer = window.plugins.FileViewer;
+    var fileViewer = window.plugins.FileViewer;
     fileViewer.open(filepath, success, fail);
 }
 

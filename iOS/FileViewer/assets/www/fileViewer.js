@@ -20,7 +20,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
-*/
+ */
 
 
 /**
@@ -35,16 +35,16 @@ function FileViewer() {
  */
 FileViewer.prototype.preview = function(filepath, successCallback, errorCallback) {
 
-	if (successCallback && (typeof successCallback !== "function")) {
-		console.log("FileViewer Error: successCallback is not a function");
-		return;
-	}
-
-	if (errorCallback && (typeof errorCallback !== "function")) {
-		console.log("FileViewer Error: errorCallback is not a function");
-		return;
-	}
-
+    if (successCallback && (typeof successCallback !== "function")) {
+        console.log("FileViewer Error: successCallback is not a function");
+        return;
+    }
+    
+    if (errorCallback && (typeof errorCallback !== "function")) {
+        console.log("FileViewer Error: errorCallback is not a function");
+        return;
+    }
+    
     PhoneGap.exec(successCallback, errorCallback, "FileViewer", "preview", [filepath]);
 };
 
@@ -54,15 +54,15 @@ FileViewer.prototype.preview = function(filepath, successCallback, errorCallback
  */
 FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
     
-	if (successCallback && (typeof successCallback !== "function")) {
-		console.log("FileViewer Error: successCallback is not a function");
-		return;
-	}
+    if (successCallback && (typeof successCallback !== "function")) {
+        console.log("FileViewer Error: successCallback is not a function");
+        return;
+    }
     
-	if (errorCallback && (typeof errorCallback !== "function")) {
-		console.log("FileViewer Error: errorCallback is not a function");
-		return;
-	}
+    if (errorCallback && (typeof errorCallback !== "function")) {
+        console.log("FileViewer Error: errorCallback is not a function");
+        return;
+    }
     
     PhoneGap.exec(successCallback, errorCallback, "FileViewer", "open", [filepath]);
 };
@@ -73,5 +73,5 @@ FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
  */
 cordova.addConstructor(function() {
     if (!window.plugins) window.plugins = {};
-	window.plugins.FileViewer = new FileViewer();
+    window.plugins.FileViewer = new FileViewer();
 });

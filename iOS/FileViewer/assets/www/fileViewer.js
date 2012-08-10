@@ -71,6 +71,7 @@ FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
 /**
  * Load FileViewer.
  */
-PhoneGap.addConstructor(function() {
-	PhoneGap.addPlugin("FileViewer", new FileViewer());
+cordova.addConstructor(function() {
+    if (!window.plugins) window.plugins = {};
+	window.plugins.FileViewer = new FileViewer();
 });

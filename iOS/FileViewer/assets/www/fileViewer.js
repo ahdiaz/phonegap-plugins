@@ -45,7 +45,7 @@ FileViewer.prototype.preview = function(filepath, successCallback, errorCallback
         return;
     }
     
-    PhoneGap.exec(successCallback, errorCallback, "FileViewer", "preview", [filepath]);
+    cordova.exec(successCallback, errorCallback, "FileViewer", "preview", [filepath]);
 };
 
 
@@ -64,7 +64,7 @@ FileViewer.prototype.previewByMimetype = function(filepath, mimetype, successCal
         return;
     }
     
-    PhoneGap.exec(successCallback, errorCallback, "FileViewer", "previewByMimetype", [filepath, mimetype]);
+    cordova.exec(successCallback, errorCallback, "FileViewer", "previewByMimetype", [filepath, mimetype]);
 };
 
 
@@ -83,7 +83,7 @@ FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
         return;
     }
     
-    PhoneGap.exec(successCallback, errorCallback, "FileViewer", "open", [filepath]);
+    cordova.exec(successCallback, errorCallback, "FileViewer", "open", [filepath]);
 };
 
 
@@ -102,7 +102,7 @@ FileViewer.prototype.openByMimetype = function(filepath, mimetype, successCallba
         return;
     }
     
-    PhoneGap.exec(successCallback, errorCallback, "FileViewer", "openByMimetype", [filepath, mimetype]);
+    cordova.exec(successCallback, errorCallback, "FileViewer", "openByMimetype", [filepath, mimetype]);
 };
 
 

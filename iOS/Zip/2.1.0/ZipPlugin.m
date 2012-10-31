@@ -112,11 +112,8 @@
     NSArray *dirPaths;
     NSString *docsDir;
 
-    dirPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     docsDir = [dirPaths objectAtIndex:0];
-    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
-    docsDir = [docsDir stringByAppendingPathComponent:bundleIdentifier];
-    target = [docsDir stringByAppendingPathComponent:target];
 
     NSLog(@"uncompress - source: %@ target: %@", source, target);
     

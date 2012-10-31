@@ -32,12 +32,10 @@
 
 @implementation ZipPlugin
 
-- (void) info:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) info:(CDVInvokedUrlCommand*)command
 {
-    NSString* callbackId = [arguments pop];
-    VERIFY_ARGUMENTS(arguments, 1, callbackId)
-    
-    NSString* source = [arguments objectAtIndex:0];
+    NSString* callbackId = command.callbackId;
+    NSString* source = [command.arguments objectAtIndex:0];
     
     CDVPluginResult* result = nil;
     NSString* jsString = nil;
@@ -85,16 +83,15 @@
     }
 }
 
-- (void) compress:(NSMutableArray *)arguments withDict:(NSMutableDictionary *)options
+- (void) compress:(CDVInvokedUrlCommand*)command
 {
-    NSString* callbackId = [arguments pop];
-    VERIFY_ARGUMENTS(arguments, 1, callbackId)
+    NSString* callbackId = command.callbackId;
+    NSString* source = [command.arguments objectAtIndex:0];
+    NSString* target = [command.arguments objectAtIndex:1];
     
     CDVPluginResult *result = nil;
     NSString *jsString = nil;
     
-    NSString *source = [arguments objectAtIndex:0];
-    NSString *target = [arguments objectAtIndex:1];
     NSLog(@"source: %@ target: %@", source, target);
     
     //TODO: Implement it!
@@ -102,24 +99,26 @@
     [self writeJavascript: jsString];
 }
 
-- (void) uncompress:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options
+- (void) uncompress:(CDVInvokedUrlCommand*)command
 {
     // TODO: Handle exceptions.
     
-    NSString* callbackId = [arguments pop];
-    VERIFY_ARGUMENTS(arguments, 1, callbackId)
+    NSString* callbackId = command.callbackId;
+    NSString* source = [command.arguments objectAtIndex:0];
+    NSString* target = [command.arguments objectAtIndex:1];
     
-    // Obtain arguments.
-    NSString *source = [arguments objectAtIndex:0];
-    NSString *target = [arguments objectAtIndex:1];
-    
-    NSLog(@"source: %@, target: %@", source, target);
+    //NSLog(@"source: %@, target: %@", source, target);
     
     NSArray *dirPaths;
     NSString *docsDir;
 
-    dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    dirPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     docsDir = [dirPaths objectAtIndex:0];
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    docsDir = [docsDir stringByAppendingPathComponent:bundleIdentifier];
+    target = [docsDir stringByAppendingPathComponent:target];
+
+    NSLog(@"uncompress - source: %@ target: %@", source, target);
     
     ZipFile *unzipFile= [[ZipFile alloc] initWithFileName:source mode:ZipFileModeUnzip];
     [unzipFile goToFirstFileInZip];
@@ -129,7 +128,7 @@
     for (int i = 0; i < totalEntities; i++) {
 
         FileInZipInfo *info = [unzipFile getCurrentFileInZipInfo];
-        //NSLog(@"Processing: %@", info.name);
+        NSLog(@"Processing: %@", info.name);
         
         // Checking if current entity is a file or a directory.
         BOOL isDir;
@@ -154,11 +153,11 @@
             // Check existence of base directory path, create it otherwise.
             NSRange range = [targetPath rangeOfString:@"/" options: NSBackwardsSearch];
             NSString *basePath = [targetPath substringToIndex:range.location];
-            
+
             [self createDirectory:basePath];
             
             [read readDataWithBuffer:data];
-            [data writeToFile:targetPath atomically:NO];
+            [data writeToFile:targetPath atomically:NO];  
             [data release];
             [read finishedReading];
             

@@ -28,8 +28,8 @@
 @interface ZipPlugin : CDVPlugin {
     int processedEntities;
 }
-- (void) info:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) compress:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
-- (void) uncompress:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+- (void) info:(CDVInvokedUrlCommand*)command;
+- (void) compress:(CDVInvokedUrlCommand*)command;
+- (void) uncompress:(CDVInvokedUrlCommand*)command;
 
 @end

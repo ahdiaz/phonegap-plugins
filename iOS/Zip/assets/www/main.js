@@ -63,7 +63,7 @@ function uncompressFromSDCard() {
 
 function uncompressFromURL() {
 
-	var url = "http://10.42.0.1/test.zip";
+	var url = "http://localhost/test.zip";
 	var targetName = "/test.zip";
     
     
@@ -83,7 +83,8 @@ function uncompressFromURL() {
 
 		fileSystem.root.getFile(targetName, {create: true, exclusive: false}, function (fileEntry) {
 
-			var localPath = fileEntry.fullPath;
+            var localPath = fileEntry.fullPath;
+            console.log('localPath:' + localPath);
 			
 			/*
 			if (device.platform === "Android" && localPath.indexof("file://") === 0) {

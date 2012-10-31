@@ -112,19 +112,14 @@
     // Obtain arguments.
     NSString *source = [arguments objectAtIndex:0];
     NSString *target = [arguments objectAtIndex:1];
-
+    
+    NSLog(@"source: %@, target: %@", source, target);
+    
     NSArray *dirPaths;
     NSString *docsDir;
 
     dirPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     docsDir = [dirPaths objectAtIndex:0];
-    target = [docsDir stringByAppendingPathComponent:target];
-    
-    // Evaluate the destination path based on the source.
-    NSRange range = [source rangeOfString:@"/" options: NSBackwardsSearch];
-    NSString *sourcePath = [source substringToIndex:range.location];
-
-    NSLog(@"uncompress - source: %@ sourcePath: %@ target: %@", source, sourcePath, target);
     
     ZipFile *unzipFile= [[ZipFile alloc] initWithFileName:source mode:ZipFileModeUnzip];
     [unzipFile goToFirstFileInZip];
@@ -134,7 +129,7 @@
     for (int i = 0; i < totalEntities; i++) {
 
         FileInZipInfo *info = [unzipFile getCurrentFileInZipInfo];
-        NSLog(@"Processing: %@", info.name);
+        //NSLog(@"Processing: %@", info.name);
         
         // Checking if current entity is a file or a directory.
         BOOL isDir;
@@ -159,11 +154,11 @@
             // Check existence of base directory path, create it otherwise.
             NSRange range = [targetPath rangeOfString:@"/" options: NSBackwardsSearch];
             NSString *basePath = [targetPath substringToIndex:range.location];
-
+            
             [self createDirectory:basePath];
             
             [read readDataWithBuffer:data];
-            [data writeToFile:targetPath atomically:NO];  
+            [data writeToFile:targetPath atomically:NO];
             [data release];
             [read finishedReading];
             

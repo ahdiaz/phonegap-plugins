@@ -43,7 +43,7 @@ Zip.prototype.info = function(source, successCallback, errorCallback) {
 		return;
 	}
 
-        PhoneGap.exec(successCallback, errorCallback, "Zip", "info", [source]);
+        cordova.exec(successCallback, errorCallback, "Zip", "info", [source]);
 };
 
 
@@ -62,7 +62,7 @@ Zip.prototype.compress = function(source, target, successCallback, errorCallback
 		return;
 	}
 
-	PhoneGap.exec(successCallback, errorCallback, "Zip", "compress", [source, target]);
+	cordova.exec(successCallback, errorCallback, "Zip", "compress", [source, target]);
 };
 
 /**
@@ -80,13 +80,14 @@ Zip.prototype.uncompress = function(source, target, successCallback, errorCallba
 		return;
 	}
 
-	PhoneGap.exec(successCallback, errorCallback, "Zip", "uncompress", [source, target]);
+	cordova.exec(successCallback, errorCallback, "Zip", "uncompress", [source, target]);
 };
 
 
 /**
  * Load Zip.
  */
-PhoneGap.addConstructor(function() {
-	PhoneGap.addPlugin("Zip", new Zip());
+cordova.addConstructor(function() {
+    if (!window.plugins) window.plugins = {}; 
+    window.plugins.Zip = new Zip();
 });

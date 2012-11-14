@@ -22,7 +22,7 @@
 * THE SOFTWARE.
 */
 
-package org.apache.cordova.FileViewer;
+package org.apache.cordova.plugin.FileViewer;
 
 import java.io.File;
 
@@ -44,6 +44,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 
 public class FileViewer extends Plugin {
+
+	private static final String LOG_TAG = "FileViewer";
+
     /**
     * Executes the request and returns PluginResult.
     *
@@ -77,7 +80,7 @@ public class FileViewer extends Plugin {
             }
         } catch (JSONException e) {
             status = PluginResult.Status.JSON_EXCEPTION;
-            return new PluginResult(status); 
+            return new PluginResult(status);
         }
 
         return new PluginResult(status, result);
@@ -102,16 +105,19 @@ public class FileViewer extends Plugin {
     }
 
     public JSONObject openByMimetype(String filePath, String mimetype) throws JSONException {
-        String tag = "FileViewer";
 
         File file = new File(filePath);
+        if (!file.isAbsolute()) {
+            file = new File("www/" + filePath);
+        }
+
         String fileName = file.getName();
         AssetManager am = this.ctx.getAssets();
 
         if (!file.exists()) {
             try {
                 String tmpFileName = "/sdcard/" + file.getName();
-                InputStream in = am.open(filePath);
+                InputStream in = am.open(file.toString());
                 FileOutputStream out = new FileOutputStream(tmpFileName);
 
                 byte[] buffer = new byte[1024];
@@ -128,7 +134,7 @@ public class FileViewer extends Plugin {
                 file = new File(tmpFileName);
 
             } catch (Exception e) {
-                LOG.e(tag, "FileViewer: " + e.toString());
+                LOG.e(LOG_TAG, e.toString());
                 file = null;
             }
         }
@@ -141,15 +147,15 @@ public class FileViewer extends Plugin {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 this.ctx.startActivity(intent);
-                return getStateData(PluginResult.Status.OK.toString(), "", filePath, mimetype, fileName);
+                return getStateData(PluginResult.Status.OK.toString(), "", file.getAbsolutePath(), mimetype, fileName);
 
             } catch (android.content.ActivityNotFoundException e) {
-                System.out.println("FileViewer: Error loading '" + filePath + "' url: "+ e.toString());
-                return getStateData(PluginResult.Status.INVALID_ACTION.toString(), e.toString(), filePath, mimetype, fileName);
+                LOG.e(LOG_TAG, e.toString());
+                return getStateData(PluginResult.Status.INVALID_ACTION.toString(), e.toString(), file.getAbsolutePath(), mimetype, fileName);
             }
 
         } else {
-            LOG.e(tag, "FileViewer: '" + file.getAbsolutePath() +  "' file not found");
+            LOG.e(LOG_TAG, file.toString() +  " file not found");
             return getStateData(PluginResult.Status.ERROR.toString(), "File not found", filePath, mimetype, fileName);
         }
     }

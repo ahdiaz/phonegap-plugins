@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+(function(gap) {
 
 /**
  * Constructor
@@ -45,7 +46,7 @@ FileViewer.prototype.preview = function(filepath, successCallback, errorCallback
         return;
     }
     
-    cordova.exec(successCallback, errorCallback, "FileViewer", "preview", [filepath]);
+    gap.exec(successCallback, errorCallback, "FileViewer", "preview", [filepath]);
 };
 
 
@@ -64,7 +65,7 @@ FileViewer.prototype.previewByMimetype = function(filepath, mimetype, successCal
         return;
     }
     
-    cordova.exec(successCallback, errorCallback, "FileViewer", "previewByMimetype", [filepath, mimetype]);
+    gap.exec(successCallback, errorCallback, "FileViewer", "previewByMimetype", [filepath, mimetype]);
 };
 
 
@@ -83,7 +84,7 @@ FileViewer.prototype.open = function(filepath, successCallback, errorCallback) {
         return;
     }
     
-    cordova.exec(successCallback, errorCallback, "FileViewer", "open", [filepath]);
+    gap.exec(successCallback, errorCallback, "FileViewer", "open", [filepath]);
 };
 
 
@@ -102,7 +103,7 @@ FileViewer.prototype.openByMimetype = function(filepath, mimetype, successCallba
         return;
     }
     
-    cordova.exec(successCallback, errorCallback, "FileViewer", "openByMimetype", [filepath, mimetype]);
+    gap.exec(successCallback, errorCallback, "FileViewer", "openByMimetype", [filepath, mimetype]);
 };
 
 
@@ -113,3 +114,5 @@ cordova.addConstructor(function() {
     if (!window.plugins) window.plugins = {};
     window.plugins.FileViewer = new FileViewer();
 });
+
+})(window.cordova || window.Cordova || window.PhoneGap);
